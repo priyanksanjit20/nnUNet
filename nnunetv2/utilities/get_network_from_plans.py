@@ -4,6 +4,7 @@ from typing import Union
 
 from nnunetv2.utilities.find_class_by_name import recursive_find_python_class
 from batchgenerators.utilities.file_and_folder_operations import join
+from nnunetv2.new_architectures.unet_se import PlainConvUNet_se
 
 
 def get_network_from_plans(arch_class_name, arch_kwargs, arch_kwargs_req_import, input_channels, output_channels,
@@ -31,7 +32,7 @@ def get_network_from_plans(arch_class_name, arch_kwargs, arch_kwargs_req_import,
     if deep_supervision is not None:
         architecture_kwargs['deep_supervision'] = deep_supervision
 
-    network = nw_class(
+    network = PlainConvUNet_se(
         input_channels=input_channels,
         num_classes=output_channels,
         **architecture_kwargs
@@ -62,6 +63,9 @@ if __name__ == "__main__":
             "dropout_op_kwargs": None,
             "nonlin": "torch.nn.LeakyReLU",
             "nonlin_kwargs": {"inplace": True},
+            'deep_supervision':True,
+            'se_reduction_ratio':16,
+            'nonlin_first':False
         },
         arch_kwargs_req_import=["conv_op", "norm_op", "dropout_op", "nonlin"],
         input_channels=1,
